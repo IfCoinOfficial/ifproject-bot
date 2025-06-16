@@ -224,16 +224,7 @@ bot.on('message', (msg) => {
     const text = msg.text;
 
     if (text === '/start') {
-        bot.sendMessage(chatId, '🎉 IF 프로젝트에 오신 것을 환영합니다.\n\n사용 가능한 명령어:\n/if - 평행우주 예측기\n/alt - 세계관 응답\n/help - 도움말', {
-            reply_markup: {
-                inline_keyboard: [
-                    [
-                        { text: "👥 IF 텔레그램 ", url: "https://t.me/ifproject_official" },
-                        { text: "🌐 공식 웹사이트", url: "https://projectif.xyz" }
-                    ]
-                ]
-            }
-        });
+        bot.sendMessage(chatId, '🎉 IF 프로젝트 평행우주에 오신 것을 환영합니다.\n\n사용 가능한 명령어:\n/if - 평행우주 예측기\n/alt - 세계관 응답\n/help - 도움말\n\n📄 조만간 IF 백서도 업데이트될 예정입니다. 새로운 감정 기반 기능을 기대해주세요!');
         return;
     }
 
