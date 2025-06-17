@@ -4,9 +4,6 @@ require('dotenv').config();
 const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
-// Webhook 충돌 방지를 위해 polling 전 webhook 제거
-bot.deleteWebhook().catch(console.error);
-
 const usageTracker = {};
 const getTodayKey = () => {
   const now = new Date();
