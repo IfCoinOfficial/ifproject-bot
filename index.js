@@ -11,7 +11,7 @@ app.post(`/bot${token}`, (req, res) => {
     res.sendStatus(200);
 });
 
-// 평행우주 예측기 응답 배열
+// IF 가능성 리포트트 응답 배열
 const parallelUniversePredictions = [
     "alternate you는 벌써 움직였어요. 지금도 늦지 않았어요.",
     "당신의 선택 하나가 새로운 세계를 만들어요.",
@@ -218,7 +218,7 @@ bot.on('message', (msg) => {
     const text = msg.text;
 
     if (text === '/start') {
-        bot.sendMessage(chatId, '🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📄 백서가 곧 새롭게 업데이트될 예정입니다.\n장기 투자가 가능한 IF를 선택해 또 다른 미래를 설계해보세요.\n\n🛠 사용 가능한 기능:\n/if - 평행우주 예측기\n/help - 명령어 도움말', {
+        bot.sendMessage(chatId, '🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📄 백서가 곧 새롭게 업데이트될 예정입니다.\n장기 투자가 가능한 IF를 선택해 또 다른 미래를 설계해보세요.\n\n🛠 사용 가능한 기능:\n/if - IF 가능성 리포트\n/help - 명령어 도움말', {
             reply_markup: {
                 inline_keyboard: [
                     [
@@ -232,17 +232,17 @@ bot.on('message', (msg) => {
 
     if (text === '/if') {
         const prediction = parallelUniversePredictions[Math.floor(Math.random() * parallelUniversePredictions.length)];
-        bot.sendMessage(chatId, `🌀 평행우주 예측기 결과:\n${prediction}`);
+        bot.sendMessage(chatId, `🌀 IF 가능성 리포트 결과:\n${prediction}`);
         return;
     }
 
     if (text === '/help') {
-        bot.sendMessage(chatId, `🤖 사용 가능한 명령어:\n/start - 시작하기\n/if - 평행우주 예측기\n/help - 명령어 도움말`);
+        bot.sendMessage(chatId, `🤖 사용 가능한 명령어:\n/start - 시작하기\n/if - IF 가능성 리포트\n/help - 명령어 도움말`);
         return;
     }
 
     const prediction = parallelUniversePredictions[Math.floor(Math.random() * parallelUniversePredictions.length)];
-    bot.sendMessage(chatId, `🌀 평행우주 예측기 결과:\n${prediction}`);
+    bot.sendMessage(chatId, `🌀 IF 가능성 리포트 결과:\n${prediction}`);
 });
 
 const PORT = process.env.PORT || 3000;
