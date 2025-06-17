@@ -1,4 +1,8 @@
+require("dotenv").config(); // ✅ 꼭 있어야 함
+
 const TelegramBot = require("node-telegram-bot-api");
+
+console.log("🔐 BOT_TOKEN 확인:", process.env.BOT_TOKEN);
 
 const token = process.env.BOT_TOKEN || "여기에_직접_토큰_입력_금지_⚠️";
 const bot = new TelegramBot(token, { polling: true });
