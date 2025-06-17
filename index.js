@@ -1,13 +1,13 @@
 
 const TelegramBot = require("node-telegram-bot-api");
 
-const token = '7550867772:AAHQO4hU58maUFTFScBApXKiGJ0wjQfuPWE';
+const token = process.env.BOT_TOKEN; // 보안 유지를 위한 환경 변수 사용
 const bot = new TelegramBot(token, { polling: true });
 
 const usageTracker = {};
 const getTodayKey = () => {
     const now = new Date();
-    return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 };
 
 function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
@@ -19,7 +19,7 @@ function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
 }
 
 const ifResponses = [
-    "당신의 선택은 언제나 당신의 평행우주를 결정해요.",
+   "당신의 선택은 언제나 당신의 평행우주를 결정해요.",
     "그때 IF를 구매했다면, 오늘은 조금 더 특별한 날이 되었을지도 몰라요.",
     "Alternate You는 이미 행동을 시작했어요. 당신은 아직도 기다리고 있나요?",
     "미래는 감정에 따라 바뀌어요. 오늘의 감정이 곧 당신의 투자예요.",
