@@ -21,7 +21,7 @@ function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
   });
 }
 
-// const ifResponses = 
+const ifResponses = 
 ["alternate you는 벌써 움직였어요. 지금도 늦지 않았어요.",
   "당신의 선택 하나가 새로운 세계를 만들어요.",
   "if는 감정으로 움직이는 유일한 토큰이에요.",
