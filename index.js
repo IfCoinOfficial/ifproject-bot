@@ -232,6 +232,10 @@ const mainKeyboard = {
       [
         { text: "📡 IF 리포트 받기", callback_data: "trigger_if" },
         { text: "🌐 공식 홈페이지", url: "https://projectif.xyz" }
+      ],
+      [
+        { text: "📘 한글 백서 다운로드", url: "https://drive.google.com/file/d/1FUVSEylBMvg4pDyMs_nzgY-8jD1i9NlG/view?usp=drive_link" },
+        { text: "📘 English Whitepaper", url: "https://drive.google.com/file/d/19TbNYu2Fyv3bknINhq8UU79Eds7ZzQaI/view?usp=drive_link" }
       ]
     ]
   }
