@@ -217,11 +217,11 @@ bot.on('message', (msg) => {
     const text = msg.text;
 
     if (text === '/start') {
-        bot.sendMessage(chatId, '🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📄 백서가 곧 새롭게 업데이트될 예정입니다.\n장기 투자가 가능한 IF를 선택해 또 다른 미래를 설계해보세요.\n\n🛠 사용 가능한 기능:\n/if - IF 가능성 리포트\n/help - 명령어 도움말', {
+        bot.sendMessage(chatId, '🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📄 백서가 곧 업데이트될 예정입니다.\n장기 투자가 가능한 IF를 선택해 또 다른 미래를 설계해보세요.\n\n🛠 사용 가능한 기능:\n/if - IF 가능성 리포트\n/help - 명령어 도움말', {
             reply_markup: {
                 inline_keyboard: [
                     [
-                        { text: "🌀 IF 가능성 리포트 받기", callback_data: "trigger_if" },
+                        { text: "🌀 IF 리포트 받기", callback_data: "trigger_if" },
                         { text: "🌐 공식 웹사이트 바로가기", url: "https://projectif.xyz" }
                     ]
                 ]
@@ -247,12 +247,25 @@ bot.on('message', (msg) => {
 
 const PORT = process.env.PORT || 3000;
 
+
 bot.on("callback_query", (query) => {
     const chatId = query.message.chat.id;
 
     if (query.data === "trigger_if") {
         const prediction = parallelUniversePredictions[Math.floor(Math.random() * parallelUniversePredictions.length)];
-        bot.sendMessage(chatId, `🌀 IF 가능성 리포트:\n${prediction}`);
+
+        // 리포트 응답 전송
+        bot.sendMessage(chatId, `🌀 IF 가능성 리포트:\n${prediction}`).then(() => {
+            // 버튼이 포함된 새 메시지 다시 전송
+            bot.sendMessage(chatId, "👇 다른 평행우주를 확인하고 싶다면?", {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: "🌀 IF 리포트 다시 받기", callback_data: "trigger_if" }],
+                        [{ text: "🌐 공식 웹사이트", url: "https://projectif.xyz" }]
+                    ]
+                }
+            });
+        });
     }
 });
 app.listen(PORT, () => {
