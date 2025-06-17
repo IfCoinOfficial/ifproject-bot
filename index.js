@@ -1,8 +1,16 @@
+// index.js — Render 배포 최적화 + ETELEGRAM:409 문제 해결 버전
 const TelegramBot = require("node-telegram-bot-api");
-require('dotenv').config();
 
 const token = process.env.BOT_TOKEN;
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token, {
+  polling: {
+    interval: 300,
+    autoStart: true,
+    params: {
+      timeout: 10,
+    },
+  },
+});
 
 const usageTracker = {};
 const getTodayKey = () => {
@@ -18,9 +26,8 @@ function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
   });
 }
 
-// IF 리포트 응답 배열
 const ifResponses = [
-  "alternate you는 벌써 움직였어요. 지금도 늦지 않았어요.",
+    "alternate you는 벌써 움직였어요. 지금도 늦지 않았어요.",
   "당신의 선택 하나가 새로운 세계를 만들어요.",
   "if는 감정으로 움직이는 유일한 토큰이에요.",
   "오늘의 망설임이 내일의 후회가 되지 않길 바래요.",
@@ -217,73 +224,59 @@ const ifResponses = [
   "감정 기반 코인, if가 먼저 움직였어요.",
   "평행우주의 자아는 IF를 선택했어요.",
   "if는 감정을 중심으로 진화 중이에요."
+
 ];
 
-// 인라인 버튼
 const mainKeyboard = {
   reply_markup: {
-    inline_keyboard: [[
-      { text: "📡 IF 리포트 받기", callback_data: "trigger_if" },
-      { text: "🌐 공식 홈페이지", url: "https://projectif.xyz" }
-    ]]
-  }
+    inline_keyboard: [
+      [
+        { text: "📱 IF 리포트 받기", callback_data: "trigger_if" },
+        { text: "🌐 공식 홈페이지", url: "https://projectif.xyz" },
+      ],
+    ],
+  },
 };
 
-// /start 핸들러
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  const userMsgId = msg.message_id;                    // ← 사용자 메시지 ID
-  const welcome = "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n" +
-                  "📘 곧 백서가 업데이트 될 예정입니다. 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.";
+  const msgId = msg.message_id;
+  const welcome =
+    "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📘 골 백서가 업데이트될 예정입니다. 장기 투자가 가능한 IF를 선택하여 \u000a또 다른 미래를 만들어보세요.";
 
-  // 봇 응답
   sendAutoDelete(chatId, welcome, mainKeyboard);
-
-  // 사용자가 보낸 /start 명령어 메시지 1분 후 삭제
-  setTimeout(() => {
-    bot.deleteMessage(chatId, userMsgId).catch(() => {});
-  }, 60000);
+  setTimeout(() => bot.deleteMessage(chatId, msgId).catch(() => {}), 60000);
 });
 
-// /help 핸들러
 bot.onText(/\/help/, (msg) => {
   const chatId = msg.chat.id;
-  const userMsgId = msg.message_id;
-  const helpMsg = "📌 사용 가능한 명령어:\n\n" +
-                  "/start - IF 프로젝트 안내 및 버튼\n" +
-                  "/if - IF 리포트 확인\n" +
-                  "/help - 사용법 안내";
+  const msgId = msg.message_id;
+  const helpMsg =
+    "📌 사용 가능한 명령어:\n\n/start - IF 프로젝트 안내 및 버튼\n/if - IF 리포트 확인\n/help - 사용법 안내";
 
   sendAutoDelete(chatId, helpMsg);
-
-  setTimeout(() => {
-    bot.deleteMessage(chatId, userMsgId).catch(() => {});
-  }, 60000);
+  setTimeout(() => bot.deleteMessage(chatId, msg.message_id).catch(() => {}), 60000);
 });
 
-// /if 핸들러
 bot.onText(/\/if/, (msg) => {
   const chatId = msg.chat.id;
-  const userMsgId = msg.message_id;
+  const msgId = msg.message_id;
   const today = getTodayKey();
 
   if (!usageTracker[chatId]) usageTracker[chatId] = {};
   if (!usageTracker[chatId][today]) usageTracker[chatId][today] = 0;
 
   if (usageTracker[chatId][today] >= 5) {
-    sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. 내일 다시 시도해 주세요.");
+    sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. \ub0b4일 다시 시도해 주세요.");
   } else {
     usageTracker[chatId][today]++;
     const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
-    sendAutoDelete(chatId, `📡 IF 리포트:\n\n${random}`);
+    sendAutoDelete(chatId, `📱 IF 리포트:\n\n${random}`);
   }
 
-  setTimeout(() => {
-    bot.deleteMessage(chatId, userMsgId).catch(() => {});
-  }, 60000);
+  setTimeout(() => bot.deleteMessage(chatId, msgId).catch(() => {}), 60000);
 });
 
-// 버튼 콜백 처리
 bot.on("callback_query", (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
@@ -294,11 +287,11 @@ bot.on("callback_query", (query) => {
 
   if (data === "trigger_if") {
     if (usageTracker[chatId][today] >= 5) {
-      sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. 내일 다시 시도해 주세요.");
+      sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. \ub0b4일 다시 시도해 주세요.");
     } else {
       usageTracker[chatId][today]++;
       const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
-      sendAutoDelete(chatId, `📡 IF 리포트:\n\n${random}`);
+      sendAutoDelete(chatId, `📱 IF 리포트:\n\n${random}`);
     }
   }
 
