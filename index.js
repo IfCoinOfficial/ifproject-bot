@@ -2,20 +2,18 @@
 const TelegramBot = require("node-telegram-bot-api");
 
 // 👉 여기에 실제 토큰 넣기
-const token = "7550867772:AAHQO4hU58maUFTFScBApXKiGJ0wjQfuPWE";
+const token = '7550867772:AAHQO4hU58maUFTFScBApXKiGJ0wjQfuPWE';
 
 const bot = new TelegramBot(token, { polling: true });
 
 // ✅ 전역 사용 추적 객체
 const usageTracker = {};
 
-// ✅ 유틸: 하루 기준 키 생성
 const getTodayKey = () => {
     const now = new Date();
     return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
 };
 
-// ✅ 자동 삭제 기능
 function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
     bot.sendMessage(chatId, text, options).then((msg) => {
         setTimeout(() => {
@@ -24,7 +22,6 @@ function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
     });
 }
 
-// ✅ 평행우주 응답 예시 (간략히)
 const ifResponses = [
     "🌀 만약 그때 IF를 구매했다면, 지금쯤 당신은 평행우주에서 스타트업 CEO가 되었을지도 몰라요.",
     "🧠 IF를 선택했다면 지금쯤 인공지능이 당신의 일기를 써주고 있을 거예요.",
@@ -33,7 +30,6 @@ const ifResponses = [
     "😂 IF를 안 샀다면? 지금처럼 궁금해하면서 이 버튼을 또 누르고 있었겠죠.",
 ];
 
-// ✅ 버튼 템플릿
 const mainKeyboard = {
     reply_markup: {
         inline_keyboard: [[
@@ -46,26 +42,21 @@ const mainKeyboard = {
 // ✅ /start
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
-    const welcome = "🎉 IF 프로젝트에 참여하신 것을 환영합니다!
+    const welcome = `🎉 IF 프로젝트에 참여하신 것을 환영합니다!
 
-" +
-        "📘 곧 백서가 업데이트될 예정입니다. 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.";
+📘 곧 백서가 업데이트될 예정입니다. 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.`;
     sendAutoDelete(chatId, welcome, mainKeyboard);
 });
 
 // ✅ /help
 bot.onText(/\/help/, (msg) => {
     const chatId = msg.chat.id;
-    const helpMsg = "📌 사용 가능한 명령어:
+    const helpMsg = `📌 사용 가능한 명령어:
 
-" +
-        "/start - IF 프로젝트 안내 및 버튼
-" +
-        "/if - 평행우주 리포트 응답
-" +
-        "/help - 사용법 안내
-" +
-        "/testdelete - 테스트 메시지 삭제";
+/start - IF 프로젝트 안내 및 버튼
+/if - 평행우주 리포트 응답
+/help - 사용법 안내
+/testdelete - 테스트 메시지 삭제`;
     sendAutoDelete(chatId, helpMsg);
 });
 
@@ -99,7 +90,7 @@ bot.onText(/\/testdelete/, (msg) => {
     });
 });
 
-// ✅ 버튼 응답 (callback_query)
+// ✅ 버튼 응답
 bot.on("callback_query", (query) => {
     const chatId = query.message.chat.id;
     const data = query.data;
@@ -121,5 +112,5 @@ bot.on("callback_query", (query) => {
 ${random}`);
     }
 
-    bot.answerCallbackQuery(query.id); // 버튼 반응 처리
+    bot.answerCallbackQuery(query.id);
 });
