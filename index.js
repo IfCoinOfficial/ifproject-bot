@@ -8,13 +8,6 @@ const token = process.env.BOT_TOKEN || "여기에_직접_토큰_입력_금지_�
 const bot = new TelegramBot(token, { polling: true });
 require("dotenv").config();
 
-// ✅ 웹훅 설정 제거
-bot.deleteWebhook().then(() => {
-  console.log("✅ Webhook deleted. Polling 시작.");
-}).catch((err) => {
-  console.warn("⚠️ Webhook 삭제 실패:", err.message);
-});
-
 const usageTracker = {};
 const getTodayKey = () => {
   const now = new Date();
