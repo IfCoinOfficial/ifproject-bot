@@ -6,20 +6,21 @@ const bot = new TelegramBot(token, { polling: true });
 
 const usageTracker = {};
 const getTodayKey = () => {
-    const now = new Date();
-    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  const now = new Date();
+  return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 };
 
 function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
-    bot.sendMessage(chatId, text, options).then((msg) => {
-        setTimeout(() => {
-            bot.deleteMessage(chatId, msg.message_id).catch(() => {});
-        }, delay);
-    });
+  bot.sendMessage(chatId, text, options).then((msg) => {
+    setTimeout(() => {
+      bot.deleteMessage(chatId, msg.message_id).catch(() => {});
+    }, delay);
+  });
 }
 
+// ✅ 배열 선언 오류 수정
 const ifResponses = [
-   "당신의 선택은 언제나 당신의 평행우주를 결정해요.",
+    "당신의 선택은 언제나 당신의 평행우주를 결정해요.",
     "그때 IF를 구매했다면, 오늘은 조금 더 특별한 날이 되었을지도 몰라요.",
     "Alternate You는 이미 행동을 시작했어요. 당신은 아직도 기다리고 있나요?",
     "미래는 감정에 따라 바뀌어요. 오늘의 감정이 곧 당신의 투자예요.",
@@ -79,78 +80,82 @@ const ifResponses = [
 ];
 
 const mainKeyboard = {
-    reply_markup: {
-        inline_keyboard: [[
-            { text: "📡 IF 리포트 받기", callback_data: "trigger_if" },
-            { text: "🌐 공식 홈페이지", url: "https://projectif.xyz" }
-        ]]
-    }
+  reply_markup: {
+    inline_keyboard: [
+      [
+        { text: "📡 IF 리포트 받기", callback_data: "trigger_if" },
+        { text: "🌐 공식 홈페이지", url: "https://projectif.xyz" }
+      ]
+    ]
+  }
 };
 
 bot.onText(/\/start/, (msg) => {
-    const chatId = msg.chat.id;
-    const msgId = msg.message_id;
+  const chatId = msg.chat.id;
+  const msgId = msg.message_id;
 
-    const welcome = "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📘 곧 백서가 업데이트될 예정입니다. 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.";
+  const welcome =
+    "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📘 곧 백서가 업데이트될 예정입니다. 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.";
 
-    sendAutoDelete(chatId, welcome, mainKeyboard);
+  sendAutoDelete(chatId, welcome, mainKeyboard);
 
-    setTimeout(() => {
-        bot.deleteMessage(chatId, msgId).catch(() => {});
-    }, 60000);
+  setTimeout(() => {
+    bot.deleteMessage(chatId, msgId).catch(() => {});
+  }, 60000);
 });
 
 bot.onText(/\/help/, (msg) => {
-    const chatId = msg.chat.id;
-    const msgId = msg.message_id;
+  const chatId = msg.chat.id;
+  const msgId = msg.message_id;
 
-    const helpMsg = "📌 사용 가능한 명령어:\n\n/start - IF 프로젝트 안내 및 버튼\n/if - IF 리포트 확인\n/help - 사용법 안내";
+  const helpMsg =
+    "📌 사용 가능한 명령어:\n\n/start - IF 프로젝트 안내 및 버튼\n/if - IF 리포트 확인\n/help - 사용법 안내";
 
-    sendAutoDelete(chatId, helpMsg);
+  sendAutoDelete(chatId, helpMsg);
 
-    setTimeout(() => {
-        bot.deleteMessage(chatId, msgId).catch(() => {});
-    }, 60000);
+  setTimeout(() => {
+    bot.deleteMessage(chatId, msgId).catch(() => {});
+  }, 60000);
 });
 
 bot.onText(/\/if/, (msg) => {
-    const chatId = msg.chat.id;
-    const msgId = msg.message_id;
-    const today = getTodayKey();
+  const chatId = msg.chat.id;
+  const msgId = msg.message_id;
+  const today = getTodayKey();
 
-    if (!usageTracker[chatId]) usageTracker[chatId] = {};
-    if (!usageTracker[chatId][today]) usageTracker[chatId][today] = 0;
+  if (!usageTracker[chatId]) usageTracker[chatId] = {};
+  if (!usageTracker[chatId][today]) usageTracker[chatId][today] = 0;
 
-    if (usageTracker[chatId][today] >= 5) {
-        sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. 내일 다시 시도해 주세요.");
-    } else {
-        usageTracker[chatId][today]++;
-        const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
-        sendAutoDelete(chatId, `📡 IF 리포트:\n\n${random}`);
-    }
+  if (usageTracker[chatId][today] >= 5) {
+    sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. 내일 다시 시도해 주세요.");
+  } else {
+    usageTracker[chatId][today]++;
+    const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
+    sendAutoDelete(chatId, `📡 IF 리포트:\n\n${random}`);
+  }
 
-    setTimeout(() => {
-        bot.deleteMessage(chatId, msgId).catch(() => {});
-    }, 60000);
+  setTimeout(() => {
+    bot.deleteMessage(chatId, msgId).catch(() => {});
+  }, 60000);
 });
 
 bot.on("callback_query", (query) => {
-    const chatId = query.message.chat.id;
-    const data = query.data;
-    const today = getTodayKey();
+  const chatId = query.message.chat.id;
+  const data = query.data;
+  const today = getTodayKey();
 
-    if (!usageTracker[chatId]) usageTracker[chatId] = {};
-    if (!usageTracker[chatId][today]) usageTracker[chatId][today] = 0;
+  if (!usageTracker[chatId]) usageTracker[chatId] = {};
+  if (!usageTracker[chatId][today]) usageTracker[chatId][today] = 0;
 
-    if (data === "trigger_if") {
-        if (usageTracker[chatId][today] >= 5) {
-            sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. 내일 다시 시도해 주세요.");
-        } else {
-            usageTracker[chatId][today]++;
-            const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
-            sendAutoDelete(chatId, `📡 IF 리포트:\n\n${random}`);
-        }
+  if (data === "trigger_if") {
+    if (usageTracker[chatId][today] >= 5) {
+      sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. 내일 다시 시도해 주세요.");
+    } else {
+      usageTracker[chatId][today]++;
+      const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
+      sendAutoDelete(chatId, `📡 IF 리포트:\n\n${random}`);
     }
+  }
 
-    bot.answerCallbackQuery(query.id);
+  bot.answerCallbackQuery(query.id);
 });
