@@ -13,7 +13,7 @@ const getTodayKey = () => {
   return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 };
 
-function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
+function sendAutoDelete(chatId, text, options = {}, delay = 80000) {
   bot.sendMessage(chatId, text, options).then((msg) => {
     setTimeout(() => {
       bot.deleteMessage(chatId, msg.message_id).catch(() => {});
