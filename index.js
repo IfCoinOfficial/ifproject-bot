@@ -1,14 +1,10 @@
 
 const TelegramBot = require("node-telegram-bot-api");
 
-// 👉 여기에 실제 토큰 넣기
 const token = '7550867772:AAHQO4hU58maUFTFScBApXKiGJ0wjQfuPWE';
-
 const bot = new TelegramBot(token, { polling: true });
 
-// ✅ 전역 사용 추적 객체
 const usageTracker = {};
-
 const getTodayKey = () => {
     const now = new Date();
     return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
@@ -23,11 +19,11 @@ function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
 }
 
 const ifResponses = [
-    "만약 그때 IF를 구매했다면, 지금쯤 당신은 평행우주에서 스타트업 CEO가 되었을지도 몰라요.",
-    "IF를 선택했다면 지금쯤 인공지능이 당신의 일기를 써주고 있을 거예요.",
-    "IF를 구매했다면, 지금쯤 잠실 빌딩에 옥외광고를 내건 기업인일지도 몰라요.",
-    "IF를 구매했다면... 당신의 코인지갑은 두둑했을 겁니다.",
-    "IF를 안 샀다면? 지금처럼 궁금해하면서 이 버튼을 또 누르고 있었겠죠.",
+    "당신의 선택은 언제나 당신의 평행우주를 결정해요.",
+    "그때 IF를 구매했다면, 오늘은 조금 더 특별한 날이 되었을지도 몰라요.",
+    "Alternate You는 이미 행동을 시작했어요. 당신은 아직도 기다리고 있나요?",
+    "미래는 감정에 따라 바뀌어요. 오늘의 감정이 곧 당신의 투자예요.",
+    "당신의 또 다른 자아는 IF를 통해 새 길을 열었어요."
     "당신의 선택은 언제나 당신의 평행우주를 결정해요.",
     "그때 IF를 구매했다면, 오늘은 조금 더 특별한 날이 되었을지도 몰라요.",
     "Alternate You는 이미 행동을 시작했어요. 당신은 아직도 기다리고 있나요?",
@@ -80,41 +76,52 @@ const ifResponses = [
     "감정은 흔들리지만 IF는 가능성을 열어줘요.",
     "감정도 화폐가 될 수 있어요. IF에서는요.",
     "IF를 구매한 자아는 오늘도 미래를 준비 중이에요.",
-
 ];
 
 const mainKeyboard = {
     reply_markup: {
         inline_keyboard: [[
-            { text: "🔮 IF 리포트", callback_data: "trigger_if" },
+            { text: "📡 IF 리포트 받기", callback_data: "trigger_if" },
             { text: "🌐 공식 홈페이지", url: "https://projectif.xyz" }
         ]]
     }
 };
 
-// ✅ /start
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
+    const msgId = msg.message_id;
+
     const welcome = `🎉 IF 프로젝트에 참여하신 것을 환영합니다!
 
 📘 곧 백서가 업데이트될 예정입니다. 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.`;
+
     sendAutoDelete(chatId, welcome, mainKeyboard);
+
+    setTimeout(() => {
+        bot.deleteMessage(chatId, msgId).catch(() => {});
+    }, 60000);
 });
 
-// ✅ /help
 bot.onText(/\/help/, (msg) => {
     const chatId = msg.chat.id;
+    const msgId = msg.message_id;
+
     const helpMsg = `📌 사용 가능한 명령어:
 
 /start - IF 프로젝트 안내 및 버튼
-/if - IF 리포트
+/if - IF 리포트 확인
 /help - 사용법 안내`;
+
     sendAutoDelete(chatId, helpMsg);
+
+    setTimeout(() => {
+        bot.deleteMessage(chatId, msgId).catch(() => {});
+    }, 60000);
 });
 
-// ✅ /if
 bot.onText(/\/if/, (msg) => {
     const chatId = msg.chat.id;
+    const msgId = msg.message_id;
     const today = getTodayKey();
 
     if (!usageTracker[chatId]) usageTracker[chatId] = {};
@@ -122,46 +129,37 @@ bot.onText(/\/if/, (msg) => {
 
     if (usageTracker[chatId][today] >= 5) {
         sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. 내일 다시 시도해 주세요.");
-        return;
-    }
-
-    usageTracker[chatId][today]++;
-    const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
-    sendAutoDelete(chatId, `📡 IF 리포트:
-
-${random}`);
-});
-
-// ✅ /testdelete
-bot.onText(/\/testdelete/, (msg) => {
-    const chatId = msg.chat.id;
-    bot.sendMessage(chatId, "🧪 이 메시지는 5초 후 삭제됩니다").then((sentMsg) => {
-        setTimeout(() => {
-            bot.deleteMessage(chatId, sentMsg.message_id).catch((e) => console.error("삭제 실패:", e));
-        }, 5000);
-    });
-});
-
-// ✅ 버튼 응답
-bot.on("callback_query", (query) => {
-    const chatId = query.message.chat.id;
-    const data = query.data;
-
-    if (data === "trigger_if") {
-        const today = getTodayKey();
-        if (!usageTracker[chatId]) usageTracker[chatId] = {};
-        if (!usageTracker[chatId][today]) usageTracker[chatId][today] = 0;
-
-        if (usageTracker[chatId][today] >= 5) {
-            sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. 내일 다시 시도해 주세요.");
-            return;
-        }
-
+    } else {
         usageTracker[chatId][today]++;
         const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
         sendAutoDelete(chatId, `📡 IF 리포트:
 
 ${random}`);
+    }
+
+    setTimeout(() => {
+        bot.deleteMessage(chatId, msgId).catch(() => {});
+    }, 60000);
+});
+
+bot.on("callback_query", (query) => {
+    const chatId = query.message.chat.id;
+    const data = query.data;
+    const today = getTodayKey();
+
+    if (!usageTracker[chatId]) usageTracker[chatId] = {};
+    if (!usageTracker[chatId][today]) usageTracker[chatId][today] = 0;
+
+    if (data === "trigger_if") {
+        if (usageTracker[chatId][today] >= 5) {
+            sendAutoDelete(chatId, "⚠️ 하루 5회까지만 사용할 수 있어요. 내일 다시 시도해 주세요.");
+        } else {
+            usageTracker[chatId][today]++;
+            const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
+            sendAutoDelete(chatId, `📡 IF 리포트:
+
+${random}`);
+        }
     }
 
     bot.answerCallbackQuery(query.id);
