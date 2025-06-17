@@ -1,3 +1,22 @@
+
+bot.on("message", (msg) => {
+    console.log("🔔 수신된 메시지:", msg.text);
+});
+
+bot.onText(/\/testdelete/, (msg) => {
+    const chatId = msg.chat.id;
+    console.log("🧪 /testdelete 명령 감지됨. 메시지 전송 중...");
+    bot.sendMessage(chatId, "이 메시지는 10초 후 삭제됩니다").then((sentMsg) => {
+        setTimeout(() => {
+            console.log("🗑 삭제 시도 중...");
+            bot.deleteMessage(chatId, sentMsg.message_id).then(() => {
+                console.log("✅ 메시지 삭제 성공");
+            }).catch((err) => {
+                console.error("❌ 메시지 삭제 실패:", err);
+            });
+        }, 10000);
+    });
+});
 const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
 const app = express();
