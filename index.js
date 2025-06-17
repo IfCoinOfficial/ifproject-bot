@@ -214,7 +214,8 @@ function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
   "alternate you는 사라지지 않았어요. 감정과 함께 있어요.",
   "감정 기반 코인, if가 먼저 움직였어요.",
   "평행우주의 자아는 IF를 선택했어요.",
-  "if는 감정을 중심으로 진화 중이에요."];
+  "if는 감정을 중심으로 진화 중이에요.",
+    ];
 
 const mainKeyboard = {
   reply_markup: {
