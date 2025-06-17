@@ -11,7 +11,7 @@ app.post(`/bot${token}`, (req, res) => {
     res.sendStatus(200);
 });
 
-// IF 리포트 응답 배열
+// 평행우주 예측기 응답 배열
 const parallelUniversePredictions = [
     "alternate you는 벌써 움직였어요. 지금도 늦지 않았어요.",
     "당신의 선택 하나가 새로운 세계를 만들어요.",
@@ -294,6 +294,7 @@ bot.on("callback_query", (query) => {
     const chatId = query.message.chat.id;
 
     if (query.data === "trigger_if") {
+        bot.answerCallbackQuery(query.id);
         if (!isWithinLimit(chatId)) {
             bot.sendMessage(chatId, "⚠️ 오늘은 IF 리포트를 5회 이상 사용하셨어요!\n내일 다시 찾아주세요 😊").then((sentMsg) => {
                 setTimeout(() => {
@@ -315,6 +316,7 @@ bot.on("callback_query", (query) => {
                 reply_markup: {
                     inline_keyboard: [
                         [{ text: "🌀 IF 리포트 다시 받기", callback_data: "trigger_if" }],
+                        [{ text: "🌐 공식 웹사이트", url: "https://projectif.xyz" }]
                     ]
                 }
             });
