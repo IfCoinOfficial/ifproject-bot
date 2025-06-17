@@ -339,7 +339,6 @@ bot.on("callback_query", (query) => {
                     ]
                 }
             });
-        });
     }
 });
 
