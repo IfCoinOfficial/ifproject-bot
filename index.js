@@ -1,7 +1,7 @@
 
 const TelegramBot = require("node-telegram-bot-api");
 
-const token = process.env.BOT_TOKEN; // 보안 유지를 위한 환경 변수 사용
+const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 const usageTracker = {};
@@ -91,9 +91,7 @@ bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
     const msgId = msg.message_id;
 
-    const welcome = `🎉 IF 프로젝트에 참여하신 것을 환영합니다!
-
-📘 곧 백서가 업데이트될 예정입니다. 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.`;
+    const welcome = "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📘 곧 백서가 업데이트될 예정입니다. 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.";
 
     sendAutoDelete(chatId, welcome, mainKeyboard);
 
@@ -106,11 +104,7 @@ bot.onText(/\/help/, (msg) => {
     const chatId = msg.chat.id;
     const msgId = msg.message_id;
 
-    const helpMsg = `📌 사용 가능한 명령어:
-
-/start - IF 프로젝트 안내 및 버튼
-/if - IF 리포트 확인
-/help - 사용법 안내`;
+    const helpMsg = "📌 사용 가능한 명령어:\n\n/start - IF 프로젝트 안내 및 버튼\n/if - IF 리포트 확인\n/help - 사용법 안내";
 
     sendAutoDelete(chatId, helpMsg);
 
@@ -132,9 +126,7 @@ bot.onText(/\/if/, (msg) => {
     } else {
         usageTracker[chatId][today]++;
         const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
-        sendAutoDelete(chatId, `📡 IF 리포트:
-
-${random}`);
+        sendAutoDelete(chatId, `📡 IF 리포트:\n\n${random}`);
     }
 
     setTimeout(() => {
@@ -156,9 +148,7 @@ bot.on("callback_query", (query) => {
         } else {
             usageTracker[chatId][today]++;
             const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
-            sendAutoDelete(chatId, `📡 IF 리포트:
-
-${random}`);
+            sendAutoDelete(chatId, `📡 IF 리포트:\n\n${random}`);
         }
     }
 
