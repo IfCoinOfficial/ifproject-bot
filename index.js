@@ -218,7 +218,7 @@ bot.on('message', (msg) => {
     const text = msg.text;
 
     if (text === '/start') {
-        bot.sendMessage(chatId, '🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📄 백서가 곧 새롭게 업데이트될 예정입니다.\n장기 투자가 가능한 IF를 선택해 또 다른 미래를 설계해보세요.\n\n🛠 사용 가능한 기능:\n/if - IF 가능성 리포트\n/help - 명령어 도움말', {
+        bot.sendMessage(chatId, '🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📄 백서가 곧 업데이트될 예정입니다.\n장기 투자가 가능한 IF를 선택해 또 다른 미래를 설계해보세요.\n\n🛠 사용 가능한 기능:\n/if - IF 가능성 리포트\n/help - 명령어 도움말', {
             reply_markup: {
                 inline_keyboard: [
                     [
