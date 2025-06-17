@@ -11,7 +11,7 @@ app.post(`/bot${token}`, (req, res) => {
     res.sendStatus(200);
 });
 
-// IF 가능성 리포트 응답 배열
+// IF 리포트 응답 배열
 const parallelUniversePredictions = [
     "alternate you는 벌써 움직였어요. 지금도 늦지 않았어요.",
     "당신의 선택 하나가 새로운 세계를 만들어요.",
@@ -217,7 +217,7 @@ bot.on('message', (msg) => {
     const text = msg.text;
 
     if (text === '/start') {
-        bot.sendMessage(chatId, '🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📄 백서가 곧 업데이트될 예정입니다.\n장기 투자가 가능한 IF를 선택해 또 다른 미래를 설계해보세요.\n\n🛠 사용 가능한 기능:\n/if - IF 가능성 리포트\n/help - 명령어 도움말', {
+        bot.sendMessage(chatId, '🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📄 백서가 곧 새롭게 업데이트될 예정입니다.\n장기 투자가 가능한 IF를 선택해 또 다른 미래를 설계해보세요.\n\n🛠 사용 가능한 기능:\n/if - 평행우주 예측기\n/help - 명령어 도움말', {
             reply_markup: {
                 inline_keyboard: [
                     [
@@ -232,17 +232,17 @@ bot.on('message', (msg) => {
 
     if (text === '/if') {
         const prediction = parallelUniversePredictions[Math.floor(Math.random() * parallelUniversePredictions.length)];
-        bot.sendMessage(chatId, `🌀 IF 가능성 리포트 결과:\n${prediction}`);
+        bot.sendMessage(chatId, `🌀 IF 리포트 결과:\n${prediction}`);
         return;
     }
 
     if (text === '/help') {
-        bot.sendMessage(chatId, `🤖 사용 가능한 명령어:\n/start - 시작하기\n/if - IF 가능성 리포트\n/help - 명령어 도움말`);
+        bot.sendMessage(chatId, `🤖 사용 가능한 명령어:\n/start - 시작하기\n/if - IF 리포트\n/help - 명령어 도움말`);
         return;
     }
 
     const prediction = parallelUniversePredictions[Math.floor(Math.random() * parallelUniversePredictions.length)];
-    bot.sendMessage(chatId, `🌀 IF 가능성 리포트 결과:\n${prediction}`);
+    bot.sendMessage(chatId, `🌀 IF 리포트 결과:\n${prediction}`);
 });
 
 const PORT = process.env.PORT || 3000;
@@ -255,18 +255,31 @@ bot.on("callback_query", (query) => {
         const prediction = parallelUniversePredictions[Math.floor(Math.random() * parallelUniversePredictions.length)];
 
         // 리포트 응답 전송
-        bot.sendMessage(chatId, `🌀 IF 가능성 리포트:\n${prediction}`).then(() => {
+        bot.sendMessage(chatId, `🌀 IF 리포트:\n${prediction}`).then(() => {
             // 버튼이 포함된 새 메시지 다시 전송
-            bot.sendMessage(chatId, "👇 다른 평행우주를 확인하고 싶다면?", {
+            bot.sendMessage(chatId, "👇 다른 내용의 리포트를 확인하고 싶다면?", {
                 reply_markup: {
                     inline_keyboard: [
                         [{ text: "🌀 IF 리포트 다시 받기", callback_data: "trigger_if" }],
-                        [{ text: "🌐 공식 웹사이트", url: "https://projectif.xyz" }]
                     ]
                 }
             });
         });
     }
+});
+
+bot.on("new_chat_members", (msg) => {
+    const chatId = msg.chat.id;
+    const newUser = msg.new_chat_members[0];
+
+    bot.sendMessage(chatId, `🎉 ${newUser.first_name}님, IF 프로젝트에 오신 걸 환영합니다!\n\n👇 버튼을 눌러 IF 리포트를 확인하세요`, {
+        reply_markup: {
+            inline_keyboard: [
+                [{ text: "🌀 IF 리포트 받기", callback_data: "trigger_if" }],
+                [{ text: "🌐 공식 웹사이트", url: "https://projectif.xyz" }]
+            ]
+        }
+    });
 });
 app.listen(PORT, () => {
     console.log(`IF 봇이 포트 ${PORT}에서 실행 중입니다.`);
