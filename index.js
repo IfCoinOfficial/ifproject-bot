@@ -295,22 +295,3 @@ bot.on("callback_query", (query) => {
 
   bot.answerCallbackQuery(query.id);
 });
-handleCommandWithAutoDelete(/\/event/, async (chatId) => {
-  const eventMsg = "🎊 *IF 커뮤니티 참여 이벤트 신청 완료!*\n\n" +
-    "이벤트 종료시까지 참여하셔야 보상이 지급됩니다!";
-
-  const user = await bot.getChat(chatId);
-  const username = user.username || `${user.first_name || ""} ${user.last_name || ""}`.trim();
-  const userId = user.id;
-
-  try {
-    await appendParticipant(username, userId);
-  } catch (error) {
-    console.error("❌ 기록 오류:", error);
-  }
-
-  sendAutoDelete(chatId, eventMsg, {
-    parse_mode: "Markdown",
-    disable_web_page_preview: true
-  });
-});
