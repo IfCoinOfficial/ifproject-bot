@@ -9,7 +9,7 @@ const bot = new TelegramBot(token, { polling: true });
 
 bot.on("new_chat_members", (msg) => {
   const chatId = msg.chat.id;
-  const welcome = "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📘 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.";
+  const welcome = "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📘 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.\n/event를 입력하시고 1만IF도 받아가세요!";
   sendAutoDelete(chatId, welcome, mainKeyboard);
 });
 
@@ -295,3 +295,11 @@ bot.on("callback_query", (query) => {
 
   bot.answerCallbackQuery(query.id);
 });
+handleCommandWithAutoDelete(/\/event/, (chatId) => {
+  const eventMsg = `🎊 *IF 커뮤니티 참여 이벤트 신청 완료!*\n\n` +
+    `📌 이벤트 종료 시까지 참여하셔야 보상이 지급됩니다!`;
+
+  sendAutoDelete(chatId, eventMsg, {
+    parse_mode: "Markdown",
+    disable_web_page_preview: true
+  });
