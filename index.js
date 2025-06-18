@@ -1,4 +1,29 @@
 require("dotenv").config();
+const { google } = require("googleapis");
+const fs = require("fs");
+
+const auth = new google.auth.GoogleAuth({
+  keyFile: "shining-sign-385315-359e34fa87d3.json", // 너가 업로드한 키 파일 이름
+  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+});
+
+async function appendParticipant(username, userId) {
+  const client = await auth.getClient();
+  const sheets = google.sheets({ version: "v4", auth: client });
+
+  const spreadsheetId = process.env.SHEET_ID;
+  const sheetName = process.env.SHEET_NAME;
+
+  await sheets.spreadsheets.values.append({
+    spreadsheetId,
+    range: `${sheetName}!A:B`,
+    valueInputOption: "USER_ENTERED",
+    requestBody: {
+      values: [[username, userId]],
+    },
+  });
+}
+
 
 const TelegramBot = require("node-telegram-bot-api");
 
@@ -294,4 +319,23 @@ bot.on("callback_query", (query) => {
   }
 
   bot.answerCallbackQuery(query.id);
+});
+handleCommandWithAutoDelete(/\/event/, async (chatId) => {
+  const eventMsg = "🎊 *IF 커뮤니티 참여 이벤트 신청 완료!*\n\n" +
+    "이벤트 종료시까지 참여하셔야 보상이 지급됩니다!";
+
+  const user = await bot.getChat(chatId);
+  const username = user.username || `${user.first_name || ""} ${user.last_name || ""}`.trim();
+  const userId = user.id;
+
+  try {
+    await appendParticipant(username, userId);
+  } catch (error) {
+    console.error("❌ 기록 오류:", error);
+  }
+
+  sendAutoDelete(chatId, eventMsg, {
+    parse_mode: "Markdown",
+    disable_web_page_preview: true
+  });
 });
