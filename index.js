@@ -31,14 +31,6 @@ console.log("🔐 BOT_TOKEN 확인:", process.env.BOT_TOKEN);
 const token = process.env.BOT_TOKEN || "여기에_직접_토큰_입력_금지_⚠️";
 const bot = new TelegramBot(token, { polling: true });
 
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
-const KEYFILEPATH = path.join(__dirname, 'shining-sign-385315-359e34fa87d3.json'); // 키 파일명 정확히 맞춰야 함
-
-const auth = new google.auth.GoogleAuth({
-  keyFile: KEYFILEPATH,
-  scopes: SCOPES
-});
-
 bot.on("new_chat_members", (msg) => {
   const chatId = msg.chat.id;
   const welcome = "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📘 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.\n/event를 입력하시고 1만IF도 받아가세요!";
