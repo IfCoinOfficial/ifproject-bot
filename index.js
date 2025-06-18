@@ -59,7 +59,7 @@ const getTodayKey = () => {
   return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 };
 
-function sendAutoDelete(chatId, text, options = {}, delay = 30000) {
+function sendAutoDelete(chatId, text, options = {}, delay = 60000) {
   bot.sendMessage(chatId, text, options).then((msg) => {
     setTimeout(() => {
       bot.deleteMessage(chatId, msg.message_id).catch(() => {});
@@ -289,7 +289,7 @@ function handleCommandWithAutoDelete(regexp, handler) {
     handler(msg, match); // msg, match 모두 넘김
     setTimeout(() => {
       bot.deleteMessage(chatId, msgId).catch(() => {});
-    }, 30000);
+    }, 60000);
   });
 }
 
