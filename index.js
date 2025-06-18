@@ -234,8 +234,8 @@ const mainKeyboard = {
         { text: "🌐 공식 홈페이지", url: "https://projectif.xyz" }
       ],
       [
-        { text: "📘 한글 백서 다운로드", url: "https://drive.google.com/file/d/1FUVSEylBMvg4pDyMs_nzgY-8jD1i9NlG/view?usp=drive_link" },
-        { text: "📘 English Whitepaper", url: "https://drive.google.com/file/d/19TbNYu2Fyv3bknINhq8UU79Eds7ZzQaI/view?usp=drive_link" }
+        { text: "📘 한글 백서 다운로드", url: "https://projectif.xyz/assets/if_whitepaper_v1.0_kr.pdf" },
+        { text: "📘 English Whitepaper", url: "https://projectif.xyz/assets/if_whitepaper_v1.0_en.pdf" }
       ]
     ]
   }
