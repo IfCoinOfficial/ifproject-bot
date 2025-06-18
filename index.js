@@ -20,10 +20,6 @@ async function hasAlreadyParticipated(userId) {
   return rows.flat().includes(String(userId));
 }
 
-  const rows = res.data.values || [];
-  return rows.flat().includes(String(chatId));
-}
-
 async function logEventParticipant(userId, username, walletAddress = "미입력") {
   const client = await auth.getClient();
   const sheets = google.sheets({ version: "v4", auth: client });
