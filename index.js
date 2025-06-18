@@ -1,11 +1,45 @@
 require("dotenv").config();
 
+const { google } = require("googleapis");
+
+const auth = new google.auth.GoogleAuth({
+  credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
+  scopes: ["https://www.googleapis.com/auth/spreadsheets"]
+});
+
+async function logEventParticipant(chatId, username) {
+  const client = await auth.getClient();
+  const sheets = google.sheets({ version: "v4", auth: client });
+
+  const spreadsheetId = process.env.SPREADSHEET_ID; // 꼭 Render에서 입력해놨는지 확인
+  const range = "Sheet1!A:C";
+  const date = new Date().toLocaleString("ko-KR");
+
+  const values = [[chatId, username || "NoUsername", date]];
+  const resource = { values };
+
+  await sheets.spreadsheets.values.append({
+    spreadsheetId,
+    range,
+    valueInputOption: "RAW",
+    resource
+  });
+}
+
 const TelegramBot = require("node-telegram-bot-api");
 
 console.log("🔐 BOT_TOKEN 확인:", process.env.BOT_TOKEN);
 
 const token = process.env.BOT_TOKEN || "여기에_직접_토큰_입력_금지_⚠️";
 const bot = new TelegramBot(token, { polling: true });
+
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
+const KEYFILEPATH = path.join(__dirname, 'shining-sign-385315-359e34fa87d3.json'); // 키 파일명 정확히 맞춰야 함
+
+const auth = new google.auth.GoogleAuth({
+  keyFile: KEYFILEPATH,
+  scopes: SCOPES
+});
 
 bot.on("new_chat_members", (msg) => {
   const chatId = msg.chat.id;
@@ -275,6 +309,18 @@ handleCommandWithAutoDelete(/\/if/, (chatId) => {
     const random = ifResponses[Math.floor(Math.random() * ifResponses.length)];
     sendAutoDelete(chatId, `📡 IF 리포트:\n\n${random}`);
   }
+});
+handleCommandWithAutoDelete(/\/event/, async (chatId) => {
+  const user = await bot.getChat(chatId);
+  const username = user.username || user.first_name || "NoName";
+
+  await logEventParticipant(chatId, username);
+
+  const msg = "🎊 *IF 커뮤니티 참여 이벤트 신청 완료!*\n\n이벤트 종료 시까지 참여하셔야 보상이 지급됩니다!";
+  sendAutoDelete(chatId, msg, {
+    parse_mode: "Markdown",
+    disable_web_page_preview: true
+  });
 });
 
 bot.on("callback_query", (query) => {
