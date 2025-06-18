@@ -43,7 +43,7 @@ const getTodayKey = () => {
   return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 };
 
-function sendAutoDelete(chatId, text, options = {}, delay = 80000) {
+function sendAutoDelete(chatId, text, options = {}, delay = 30000) {
   bot.sendMessage(chatId, text, options).then((msg) => {
     setTimeout(() => {
       bot.deleteMessage(chatId, msg.message_id).catch(() => {});
@@ -273,12 +273,12 @@ function handleCommandWithAutoDelete(regexp, handler) {
     handler(msg, match); // msg, match 모두 넘김
     setTimeout(() => {
       bot.deleteMessage(chatId, msgId).catch(() => {});
-    }, 60000);
+    }, 30000);
   });
 }
 
 handleCommandWithAutoDelete(/\/start/, (chatId) => {
-  const welcome = "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📘 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.";
+  const welcome = "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📘 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.\n/event를 입력하시고 1만IF도 받아가세요!";
   sendAutoDelete(chatId, welcome, mainKeyboard);
 });
 
