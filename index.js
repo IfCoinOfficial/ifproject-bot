@@ -270,7 +270,7 @@ function handleCommandWithAutoDelete(regexp, handler) {
   bot.onText(regexp, (msg, match) => {
     const chatId = msg.chat.id;
     const msgId = msg.message_id;
-    handler(chatId);
+    handler(msg, match); // msg, match 모두 넘김
     setTimeout(() => {
       bot.deleteMessage(chatId, msgId).catch(() => {});
     }, 60000);
