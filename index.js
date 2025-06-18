@@ -7,31 +7,32 @@ const auth = new google.auth.GoogleAuth({
   scopes: ["https://www.googleapis.com/auth/spreadsheets"]
 });
 
-async function hasAlreadyParticipated(chatId) {
+async function hasAlreadyParticipated(userId) {
   const client = await auth.getClient();
   const sheets = google.sheets({ version: 'v4', auth: client });
 
   const spreadsheetId = process.env.SPREADSHEET_ID;
-  const range = "Sheet1!A:A"; // chatId만 조회
+  const range = "Sheet1!A2:A"; // 헤더 제외, A열만 확인
 
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range
-  });
+  const res = await sheets.spreadsheets.values.get({ spreadsheetId, range });
+  const rows = res.data.values || [];
+
+  return rows.flat().includes(String(userId));
+}
 
   const rows = res.data.values || [];
   return rows.flat().includes(String(chatId));
 }
 
-async function logEventParticipant(chatId, username, walletAddress = "미입력") {
+async function logEventParticipant(userId, username, walletAddress = "미입력") {
   const client = await auth.getClient();
   const sheets = google.sheets({ version: "v4", auth: client });
 
   const spreadsheetId = process.env.SPREADSHEET_ID;
-  const range = "Sheet1!A:D";  // 열 4개로 확장됨
+  const range = "Sheet1!A:D";
   const date = new Date().toLocaleString("ko-KR");
 
-  const values = [[chatId, username, date, walletAddress]];
+  const values = [[userId, username, date, walletAddress]];
   const resource = { values };
 
   await sheets.spreadsheets.values.append({
@@ -317,23 +318,23 @@ handleCommandWithAutoDelete(/\/if/, (chatId) => {
   }
 });
 handleCommandWithAutoDelete(/\/event(?:\s+(\S+))?/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  const user = await bot.getChat(chatId);
-  const username = user.username || user.first_name || "NoName";
+  const userId = msg.from.id; // 개인 ID
+  const chatId = msg.chat.id; // 응답용
+  const username = msg.from.username || msg.from.first_name || "NoName";
 
-  const walletAddress = match[1];  // 입력받은 지갑주소
+  const walletAddress = match[1];
   if (!walletAddress) {
-    sendAutoDelete(chatId, "⚠️ 지갑 주소를 함께 입력해 주세요.\n예: /event 1234ABCD");
+    sendAutoDelete(chatId, "⚠️ 지갑 주소를 함께 입력해 주세요.\n예: /event 0xABC123...");
     return;
   }
 
-  const already = await hasAlreadyParticipated(chatId);
+  const already = await hasAlreadyParticipated(userId);
   if (already) {
     sendAutoDelete(chatId, "⚠️ 이미 이벤트에 참여하셨습니다.");
     return;
   }
 
-  await logEventParticipant(chatId, username, walletAddress);
+  await logEventParticipant(userId, username, walletAddress);
 
   const msgText = "🎊 *IF 커뮤니티 참여 이벤트 신청 완료!*\n\n이벤트 종료 시까지 참여하셔야 보상이 지급됩니다!";
   sendAutoDelete(chatId, msgText, {
