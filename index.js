@@ -7,6 +7,22 @@ const auth = new google.auth.GoogleAuth({
   scopes: ["https://www.googleapis.com/auth/spreadsheets"]
 });
 
+async function hasAlreadyParticipated(chatId) {
+  const client = await auth.getClient();
+  const sheets = google.sheets({ version: 'v4', auth: client });
+
+  const spreadsheetId = process.env.SPREADSHEET_ID;
+  const range = "Sheet1!A:A"; // chatId만 조회
+
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range
+  });
+
+  const rows = res.data.values || [];
+  return rows.flat().includes(String(chatId));
+}
+
 async function logEventParticipant(chatId, username, walletAddress = "미입력") {
   const client = await auth.getClient();
   const sheets = google.sheets({ version: "v4", auth: client });
@@ -307,7 +323,13 @@ handleCommandWithAutoDelete(/\/event(?:\s+(\S+))?/, async (msg, match) => {
 
   const walletAddress = match[1];  // 입력받은 지갑주소
   if (!walletAddress) {
-    sendAutoDelete(chatId, "⚠️ 지갑 주소를 함께 입력해 주세요.\n예: /event 9SdjK23kSDsfhXozavB8Xf3Yk");
+    sendAutoDelete(chatId, "⚠️ 지갑 주소를 함께 입력해 주세요.\n예: /event 1234ABCD");
+    return;
+  }
+
+  const already = await hasAlreadyParticipated(chatId);
+  if (already) {
+    sendAutoDelete(chatId, "⚠️ 이미 이벤트에 참여하셨습니다.");
     return;
   }
 
