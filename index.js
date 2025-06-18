@@ -1,29 +1,4 @@
 require("dotenv").config();
-const { google } = require("googleapis");
-const fs = require("fs");
-
-const auth = new google.auth.GoogleAuth({
-  keyFile: "shining-sign-385315-359e34fa87d3.json", // 너가 업로드한 키 파일 이름
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-});
-
-async function appendParticipant(username, userId) {
-  const client = await auth.getClient();
-  const sheets = google.sheets({ version: "v4", auth: client });
-
-  const spreadsheetId = process.env.SHEET_ID;
-  const sheetName = process.env.SHEET_NAME;
-
-  await sheets.spreadsheets.values.append({
-    spreadsheetId,
-    range: `${sheetName}!A:B`,
-    valueInputOption: "USER_ENTERED",
-    requestBody: {
-      values: [[username, userId]],
-    },
-  });
-}
-
 
 const TelegramBot = require("node-telegram-bot-api");
 
