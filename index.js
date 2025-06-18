@@ -295,11 +295,3 @@ bot.on("callback_query", (query) => {
 
   bot.answerCallbackQuery(query.id);
 });
-handleCommandWithAutoDelete(/\/event/, (chatId) => {
-  const eventMsg = `🎊 *IF 커뮤니티 참여 이벤트 신청 완료!*\n\n` +
-    `📌 이벤트 종료 시까지 참여하셔야 보상이 지급됩니다!`;
-
-  sendAutoDelete(chatId, eventMsg, {
-    parse_mode: "Markdown",
-    disable_web_page_preview: true
-  });
