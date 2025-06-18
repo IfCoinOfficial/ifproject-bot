@@ -1,4 +1,6 @@
 require("dotenv").config();
+const { google } = require("googleapis");
+const TelegramBot = require("node-telegram-bot-api");
 
 const auth = new google.auth.GoogleAuth({
   credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
@@ -23,8 +25,6 @@ async function logEventParticipant(chatId, username) {
     resource
   });
 }
-
-const TelegramBot = require("node-telegram-bot-api");
 
 console.log("🔐 BOT_TOKEN 확인:", process.env.BOT_TOKEN);
 
