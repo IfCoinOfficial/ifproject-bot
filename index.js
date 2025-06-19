@@ -293,12 +293,14 @@ function handleCommandWithAutoDelete(regexp, handler) {
   });
 }
 
-handleCommandWithAutoDelete(/\/start/, (chatId) => {
+handleCommandWithAutoDelete(/\/start/, (msg, match) => {
+  const chatId = msg.chat.id;
   const welcome = "🎉 IF 프로젝트에 참여하신 것을 환영합니다!\n\n📘 장기 투자가 가능한 IF를 선택하여 또 다른 미래를 만들어보세요.\n/event를 입력하시고 1만IF도 받아가세요!";
   sendAutoDelete(chatId, welcome, mainKeyboard);
 });
 
-handleCommandWithAutoDelete(/\/help/, (chatId) => {
+handleCommandWithAutoDelete(/\/help/, (msg, match) => {
+  const chatId = msg.chat.id;
   const helpMsg = "📌 사용 가능한 명령어:\n\n/start - IF 프로젝트 안내 및 버튼\n/if - IF 리포트 확인\n/help - 사용법 안내";
   sendAutoDelete(chatId, helpMsg);
 });
