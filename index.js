@@ -305,8 +305,10 @@ handleCommandWithAutoDelete(/\/help/, (msg, match) => {
   sendAutoDelete(chatId, helpMsg);
 });
 
-handleCommandWithAutoDelete(/\/if/, (chatId) => {
+handleCommandWithAutoDelete(/\/if/, (msg, match) => {
+  const chatId = msg.chat.id;
   const today = getTodayKey();
+
   if (!usageTracker[chatId]) usageTracker[chatId] = {};
   if (!usageTracker[chatId][today]) usageTracker[chatId][today] = 0;
 
