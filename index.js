@@ -20,15 +20,15 @@ async function hasAlreadyParticipated(userId) {
   return rows.flat().includes(String(userId));
 }
 
-async function logEventParticipant(userId, username, walletAddress = "미입력") {
+async function logEventParticipant(userId, chatId, username, walletAddress = "미입력") {
   const client = await auth.getClient();
   const sheets = google.sheets({ version: "v4", auth: client });
 
   const spreadsheetId = process.env.SPREADSHEET_ID;
-  const range = "Sheet1!A:D";
+  const range = "Sheet1!A:E";
   const date = new Date().toLocaleString("ko-KR");
 
-  const values = [[userId, username, date, walletAddress]];
+  const values = [[userId, chatId, username, date, walletAddress]];
   const resource = { values };
 
   await sheets.spreadsheets.values.append({
