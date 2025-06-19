@@ -46,10 +46,20 @@ const bot = new TelegramBot(token, { polling: true });
 
 const mainKeyboard = {
   reply_markup: {
+    inline_keyboard: [
+      [
+        { text: "📡 IF 리포트 받기", callback_data: "trigger_if" },
+        { text: "🌐 공식 홈페이지", url: "https://projectif.xyz" }
+      ],
+      [
+        { text: "📘 한글 백서 다운로드", url: "https://projectif.xyz/assets/if_whitepaper_v1.0_kr.pdf" },
+        { text: "📘 English Whitepaper", url: "https://projectif.xyz/assets/if_whitepaper_v1.0_en.pdf" }
+      ]
+    ],
     keyboard: [["/if", "/event"]],
     resize_keyboard: true,
-    one_time_keyboard: false,
-  },
+    one_time_keyboard: false
+  }
 };
 
 bot.on("new_chat_members", (msg) => {
@@ -270,21 +280,6 @@ const ifResponses =
   "감정 기반 코인, if가 먼저 움직였어요.",
   "평행우주의 자아는 IF를 선택했어요.",
   "if는 감정을 중심으로 진화 중이에요."];
-
-const mainKeyboard = {
-  reply_markup: {
-    inline_keyboard: [
-      [
-        { text: "📡 IF 리포트 받기", callback_data: "trigger_if" },
-        { text: "🌐 공식 홈페이지", url: "https://projectif.xyz" }
-      ],
-      [
-        { text: "📘 한글 백서 다운로드", url: "https://projectif.xyz/assets/if_whitepaper_v1.0_kr.pdf" },
-        { text: "📘 English Whitepaper", url: "https://projectif.xyz/assets/if_whitepaper_v1.0_en.pdf" }
-      ]
-    ]
-  }
-};
 
 // 명령어 입력 메시지도 1분 후 자동 삭제
 function handleCommandWithAutoDelete(regexp, handler) {
